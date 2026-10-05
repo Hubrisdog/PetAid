@@ -1,179 +1,211 @@
-# PetAid — Community Animal Assistance Mini System
+# PetAid
 
-**Course:** Integrative Programming (College Level Project)  
-**Project Name:** PetAid  
-**Student Activity:** Small Web-Based Animal Assistance Reporting & Case Tracking Mini System  
+A simple web-based system for reporting animals that need assistance and tracking their cases.
 
----
+This project was made for an **Integrative Programming** activity. The main purpose is to practice CRUD operations, PHP, MySQL, API requests, and connecting a web application to a database.
 
-## 1. Project Description
+## What it does
 
-**PetAid** is a simple, college-level community animal assistance reporting system. It is designed to help campus community members report stray, injured, or vulnerable animals (such as dogs, cats, and birds), dispatch student volunteers, and track the status of each case from the initial report until resolution.
+PetAid allows users to report animals that may need help, such as stray or injured dogs, cats, and other animals.
 
-### Core Concept: Case Tracking
-Each report represents a case with a lifecycle:
+A report can be followed through different stages:
+
 ```text
 Reported → Verified → Assistance Requested → Volunteer Assigned → Rescued → Treated → Closed
 ```
 
----
+The system also keeps a basic history of changes made to each report.
 
-## 2. Features
+## Main Features
 
-- **Dashboard:** Simple overview showing total reports, open cases, critical cases, rescued cases, and closed cases.
-- **Animal Reports (Full CRUD):**
-  - Create new reports (Animal Type, Description, Location, Condition, Reporter).
-  - View all reports in a clean table with search and filtering (by animal, condition, and status).
-  - View full report details with reporter information and history.
-  - Edit report details and update status.
-  - Delete/remove reports.
-- **Volunteer Assistance Dispatch (Full CRUD):**
-  - Assign registered volunteers to cases (Rescue, Medical, Food, Transport, etc.).
-  - View all active and completed assistance requests.
-  - Update status (Pending, Accepted, Completed, Cancelled).
-- **Case History Timeline:**
-  - Automatically records a chronological entry in `case_updates` every time a report's status changes.
-- **User & Volunteer Management:**
-  - Register community members and volunteers.
-  - Soft-deactivate accounts (`status = 'inactive'`) to preserve relational database integrity.
-- **REST-style API:**
-  - Simple PHP endpoints for Users, Reports, Assistance Requests, and Case Updates returning clean JSON.
+* Add, view, edit, and delete animal reports
+* Search and filter reports
+* View the details of a report
+* Assign a volunteer to a case
+* Update assistance status
+* Track the history of a case
+* Add and manage users and volunteers
+* Simple dashboard with report statistics
+* PHP API endpoints that return JSON
 
----
+## Technologies
 
-## 3. Technology Used
+* PHP 8
+* MySQL / MariaDB
+* HTML
+* CSS
+* JavaScript
+* PDO
 
-- **Backend:** PHP 8.x (using standard PDO and prepared statements)
-- **Database:** MySQL / MariaDB (via `database/petaid.sql`, with zero-config SQLite fallback)
-- **Frontend:** Plain HTML5, CSS3, and Vanilla JavaScript
-- **API:** REST-style JSON endpoints using standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`)
+No major framework is used. The project is kept simple for the scope of the activity.
 
-*No complex frameworks, ORMs, build tools, or third-party dependencies were used.*
+## Database
 
----
+The database has four main tables:
 
-## 4. Database Setup
+* `users` - stores reporters, volunteers, and admins
+* `animal_reports` - stores animal reports
+* `assistance_requests` - stores volunteer assignments
+* `case_updates` - stores changes made to a report
 
-The database schema consists of **four core tables**:
+The SQL file with the tables and sample data is located at:
 
-1. `users`: Stores community reporters, volunteers, and admins.
-2. `animal_reports`: Stores reported animal cases (references `users.user_id`).
-3. `assistance_requests`: Stores volunteer dispatch tasks (references `animal_reports.report_id` and `users.user_id`).
-4. `case_updates`: Stores the history of case status changes (references `animal_reports.report_id` and `users.user_id`).
+```text
+database/petaid.sql
+```
 
-### How to Import into MySQL (e.g. XAMPP)
-1. Start **Apache** and **MySQL** in XAMPP / WampServer.
-2. Open **phpMyAdmin** (`http://localhost/phpmyadmin`) or MySQL CLI.
-3. Import the file:
-   ```bash
-   mysql -u root -p < database/petaid.sql
-   ```
-4. Verify database credentials in `config/database.php` (default: host `localhost`, user `root`, no password).
+## Running the Project
 
-*(Note: If MySQL is not running on your machine, `config/database.php` automatically uses a local SQLite database so the system can be demonstrated immediately with zero configuration).*
+### Using PHP
 
----
+Make sure PHP is installed, then open a terminal in the project folder:
 
-## 5. How to Run the Project
+```bash
+php -S localhost:8000
+```
 
-### Option A: Using PHP Built-in Server (Easiest)
-1. Open terminal/PowerShell in the project folder:
-   ```bash
-   cd minisys
-   ```
-2. Run the PHP server:
-   ```bash
-   php -S localhost:8000
-   ```
-3. Open your browser and navigate to:
-   ```
-   http://localhost:8000
-   ```
+Open:
 
-### Option B: Using XAMPP
-1. Move or clone this folder into `htdocs`:
-   ```text
-   C:\xampp\htdocs\petaid
-   ```
-2. Open your browser:
-   ```
-   http://localhost/petaid
-   ```
+```text
+http://localhost:8000
+```
 
----
+### Using XAMPP
 
-## 6. Project Structure
+Put the project folder inside:
+
+```text
+C:\xampp\htdocs\
+```
+
+Start Apache and MySQL from XAMPP.
+
+Then open:
+
+```text
+http://localhost/petaid
+```
+
+Import `database/petaid.sql` into MySQL using phpMyAdmin or the MySQL command line.
+
+Check the database settings in:
+
+```text
+config/database.php
+```
+
+## Project Structure
 
 ```text
 petaid/
 │
 ├── api/
-│   ├── users.php          # Users REST API endpoint
-│   ├── reports.php        # Reports REST API endpoint
-│   ├── assistance.php     # Assistance requests API endpoint
-│   └── case_updates.php   # Case updates API endpoint
-│
-├── database/
-│   └── petaid.sql         # MySQL database dump and sample data
+│   ├── users.php
+│   ├── reports.php
+│   ├── assistance.php
+│   └── case_updates.php
 │
 ├── config/
-│   └── database.php       # Simple PDO database connection
+│   └── database.php
+│
+├── database/
+│   └── petaid.sql
 │
 ├── css/
-│   └── style.css          # Clean, simple student project CSS
+│   └── style.css
 │
 ├── js/
-│   └── script.js          # Helper JavaScript functions
+│   └── script.js
 │
-├── index.php              # Dashboard homepage with summary cards
-├── reports.php            # List of reports with search and filter
-├── report_details.php     # Case view, volunteer assignment & history
-├── add_report.php         # Form to submit a new animal report
-├── edit_report.php        # Form to edit a report
-├── assistance.php         # Volunteer assistance management
-├── users.php              # User registration & soft-deactivation
+├── index.php
+├── reports.php
+├── report_details.php
+├── add_report.php
+├── edit_report.php
+├── assistance.php
+├── users.php
 └── README.md
 ```
 
----
+## API
 
-## 7. Business Logic Implemented
+The project has simple PHP API endpoints for working with the database.
 
-- **Rule 1:** Only users with `role = 'volunteer'` can be assigned to an assistance request.
-- **Rule 2:** A report cannot be marked as `closed` unless it has first reached `rescued` or `treated`.
-- **Rule 3:** Whenever a report's status changes, an entry is automatically recorded in `case_updates`.
+### Reports
 
----
+```text
+GET    /api/reports.php
+POST   /api/reports.php
+GET    /api/reports.php?id=1
+PUT    /api/reports.php?id=1
+DELETE /api/reports.php?id=1
+```
 
-## 8. API Endpoints Summary
+Reports can also be filtered using parameters such as:
 
-All API endpoints return simple JSON in the format:
-- Success: `{ "success": true, "message": "...", "data": ... }`
-- Error: `{ "success": false, "message": "..." }`
+```text
+/api/reports.php?status=reported
+/api/reports.php?condition=injured
+/api/reports.php?animal_type=dog
+/api/reports.php?search=gate
+```
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/reports.php` | Get all reports (supports `?search=`, `?animal_type=`, `?condition=`, `?status=`) |
-| `GET` | `/api/reports.php?id=1` | Get single report with assistance and case history |
-| `POST` | `/api/reports.php` | Create a new animal report |
-| `PUT` | `/api/reports.php?id=1` | Update report details / status |
-| `DELETE` | `/api/reports.php?id=1` | Delete report and related updates |
-| `GET` | `/api/users.php` | List all users (supports `?role=`, `?status=`) |
-| `POST` | `/api/users.php` | Register a new user / volunteer |
-| `PUT` | `/api/users.php?id=1` | Update user details |
-| `DELETE` | `/api/users.php?id=1` | Soft-deactivate user (`status = 'inactive'`) |
-| `GET` | `/api/assistance.php` | List all volunteer assistance requests |
-| `POST` | `/api/assistance.php` | Assign volunteer to an animal report |
-| `PUT` | `/api/assistance.php?id=1` | Update assistance status (e.g. `completed`) |
-| `DELETE` | `/api/assistance.php?id=1` | Delete an assistance request |
-| `GET` | `/api/case_updates.php?report_id=1` | View history updates for a specific report |
-| `POST` | `/api/case_updates.php` | Add a case update record |
+### Users
 
----
+```text
+GET    /api/users.php
+POST   /api/users.php
+PUT    /api/users.php?id=1
+DELETE /api/users.php?id=1
+```
 
-## 9. CRUD Operations Supported
+### Assistance
 
-- **Users:** Create user, View users, Update info, Soft-deactivate user.
-- **Animal Reports:** Create report, Read/Search/Filter reports, Update details & status, Delete report.
-- **Assistance Requests:** Create request, View requests, Update status, Delete request.
-- **Case Updates:** Auto-created on status updates, Read chronological history.
+```text
+GET    /api/assistance.php
+POST   /api/assistance.php
+PUT    /api/assistance.php?id=1
+DELETE /api/assistance.php?id=1
+```
+
+### Case Updates
+
+```text
+GET    /api/case_updates.php?report_id=1
+POST   /api/case_updates.php
+```
+
+The APIs return JSON responses.
+
+Example:
+
+```json
+{
+    "success": true,
+    "message": "Report created successfully"
+}
+```
+
+## Some Rules in the System
+
+There are a few basic rules to keep the data consistent:
+
+* Only users marked as volunteers can be assigned to assistance requests.
+* A report cannot be closed before it has been rescued or treated.
+* Changes to a report's status are recorded in `case_updates`.
+* Users are deactivated instead of being completely removed from the database when possible.
+
+## CRUD
+
+The main CRUD operations are:
+
+| Part           | Create | Read | Update | Delete |
+| -------------- | ------ | ---- | ------ | ------ |
+| Users          | ✓      | ✓    | ✓      | ✓      |
+| Animal Reports | ✓      | ✓    | ✓      | ✓      |
+| Assistance     | ✓      | ✓    | ✓      | ✓      |
+| Case Updates   | ✓      | ✓    | ✓      | -      |
+
+## Notes
+
+This is a small school project, so the system intentionally keeps the features and implementation simple. It is mainly intended to demonstrate how a PHP application can communicate with a MySQL database through CRUD operations and API requests.
